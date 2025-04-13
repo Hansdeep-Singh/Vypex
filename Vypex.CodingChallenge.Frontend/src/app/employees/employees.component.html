@@ -1,0 +1,22 @@
+<nz-table nzTemplateMode>
+  <thead>
+    <tr>
+      <th>Employee Id</th>
+      <th>Name</th>
+      <th>Total Leave</th>
+      <th>Edit Leave</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (employee of employees$ | async; track employee.id) {
+    <tr>
+      <td>{{employee.id}}</td>
+      <td>{{ employee.name }}</td>
+      <td>{{employee.totalLeave}}</td>
+      <td>
+        <button routerLink="/leave/{{employee.id}}" nz-button nzType="primary">Edit Leave</button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</nz-table>

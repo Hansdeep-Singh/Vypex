@@ -1,0 +1,20 @@
+<section id="leave">
+
+    <div class="leavebox">
+        <div>Employee name = {{employee?.name}}</div>
+        <nz-range-picker [nzDisabledDate]="disabledDate" [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
+
+        <button nz-button nzType="primary" (click)="saveLeave()">Save</button>
+
+        <button nz-button nzType="primary" (click)="deleteEmployee(employee.id)">Delete {{employee?.name}}'s Leave</button>
+
+        <button nz-button nzType="primary" (click)="deleteEmployees()">Delete Everybody's Leave</button>
+
+        <nz-select nzMode="tags" nzPlaceHolder="Tag Mode" [(ngModel)]="selectedLeaves">
+            @for (leave of employeeLeaves; track leave) {
+
+            <nz-option [nzLabel]="(leave.leaveFrom | date) + ' to ' + (leave.leaveTo | date)" [nzValue]="leave.leaveId"></nz-option>
+            }
+        </nz-select>
+    </div>
+</section>
