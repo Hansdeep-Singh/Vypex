@@ -12,9 +12,9 @@ namespace Vypex.CodingChallenge.API.Controllers
     [Route("api/[controller]")]
     public class EmployeesController : ControllerBase
     {
-     private readonly IEmployeeService employeeService;
+        private readonly IEmployeeService employeeService;
         private readonly ILeaveService leaveService;
-        public EmployeesController(IEmployeeService employeeService,ILeaveService leaveService)
+        public EmployeesController(IEmployeeService employeeService, ILeaveService leaveService)
         {
             this.employeeService = employeeService;
             this.leaveService = leaveService;
@@ -23,21 +23,27 @@ namespace Vypex.CodingChallenge.API.Controllers
         public async Task<IEnumerable<EmployeeView>> GetEmployees()
         {
             List<EmployeeView> employeeViews = new();
-            if (this.employeeService is not null) { 
-            foreach(var employee in (await this.employeeService.All()))
+            if (this.employeeService is not null)
+            {
+                foreach (var employee in (await this.employeeService.All()))
                 {
-                   double days = 0;
-                   foreach(var employeeLeave in leaveService.GetEmployeeLeave(employee.Id))
+                    double days = 0;
+                    foreach (var employeeLeave in leaveService.GetEmployeeLeave(employee.Id))
                     {
+                        if (employeeLeave.LeaveTo.Day == employeeLeave.LeaveFrom.Day)
+                        {
+                            days += 1;
+                        }
+
                         days += (employeeLeave.LeaveTo - employeeLeave.LeaveFrom).TotalDays;
                     }
                     var employeeView = new EmployeeView
                     {
                         Id = employee.Id,
                         Name = employee.Name,
-                        TotalLeave = Convert.ToInt16(days),
+                        TotalLeave = days,
                     };
-                  employeeViews.Add(employeeView);
+                    employeeViews.Add(employeeView);
                 }
                 return employeeViews;
             }
@@ -48,7 +54,7 @@ namespace Vypex.CodingChallenge.API.Controllers
         [HttpGet("GetLeaves")]
         public async Task<IEnumerable<Leave>> GetLeaves()
         {
-            if (this.leaveService is not null)return await this.leaveService.All();
+            if (this.leaveService is not null) return await this.leaveService.All();
             IEnumerable<Leave> leaves = new List<Leave>();
             return leaves;
         }
@@ -62,14 +68,17 @@ namespace Vypex.CodingChallenge.API.Controllers
         }
 
         [HttpGet("GetEmployeeById/{id}")]
-        public async Task<Employee>  GetEmployeeById(string id) => await this.employeeService.GetEmployeeById(Guid.Parse(id));
+        public async Task<Employee> GetEmployeeById(string id) => await this.employeeService.GetEmployeeById(Guid.Parse(id));
 
         [HttpPost("Leave")]
         public async Task<bool> Leave(Leave leave)
         {
-           leave.LeaveFrom =  leave.LeaveFrom.AddDays(1);
-           leave.LeaveTo =  leave.LeaveTo.AddDays(1);
-            if (leaveService is not null)await leaveService.Add(leave);
+            if (leave.LeaveFrom.Day != leave.LeaveTo.Day)
+            {
+                leave.LeaveFrom = leave.LeaveFrom.AddDays(1);
+                leave.LeaveTo = leave.LeaveTo.AddDays(1);
+            }
+            if (leaveService is not null) await leaveService.Add(leave);
             return true;
         }
         [HttpPost("DeleteEmployeeLeave")]
@@ -79,10 +88,27 @@ namespace Vypex.CodingChallenge.API.Controllers
             return true;
         }
 
+        [HttpPost("DeleteLeaveRequests")]
+        public async Task<bool> DeleteLeaveRequests(string[] leaves)
+        {
+            List<Leave> leavesList = new();
+            Leave leave = new();
+            if (leaveService is not null)
+            {
+                foreach (var item in leaves)
+                {
+                    leave.LeaveId = Guid.Parse(item);
+                    leavesList.Add(leave);
+                }
+                await leaveService.Delete(leavesList);
+            }
+            return true;
+        }
+
         [HttpDelete("DeleteEmployeesLeave")]
         public async Task<bool> DeleteEmployeesLeave()
         {
-            if (leaveService is not null)   await leaveService.Delete((await leaveService.All()).ToList());
+            if (leaveService is not null) await leaveService.Delete((await leaveService.All()).ToList());
             return true;
         }
     }

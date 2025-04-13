@@ -34,6 +34,10 @@ export class EmployeeApiService {
     return this.httpClient.post<boolean>(`${this.baseUrl}/api/employees/DeleteEmployeeLeave`, model);
   }
 
+  public deleteLeaveRequests(model: any): Observable<boolean> {
+    return this.httpClient.post<boolean>(`${this.baseUrl}/api/employees/DeleteLeaveRequests`, model);
+  }
+
   public deleteEmployees(): Observable<boolean> {
     return this.httpClient.delete<boolean>(`${this.baseUrl}/api/employees/DeleteEmployeesLeave`);
   }

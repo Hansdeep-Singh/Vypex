@@ -50,7 +50,6 @@ export class LeaveComponent {
 
   getEmployeeLeave() {
     this.employeeApiService.getLeavesByEmployeeId(this.empId).subscribe((data) => {
-      console.log(data);
       this.employeeLeaves = data
       console.log(this.employeeLeaves);
       let allLeaveDates = [];
@@ -96,6 +95,10 @@ export class LeaveComponent {
   }
   deleteEmployees() {
     this.employeeApiService.deleteEmployees().subscribe();
+  }
+  deleteRequests() {
+    this.employeeApiService.deleteLeaveRequests(this.selectedLeaves).subscribe();
+    console.log(this.selectedLeaves);
   }
 }
 
