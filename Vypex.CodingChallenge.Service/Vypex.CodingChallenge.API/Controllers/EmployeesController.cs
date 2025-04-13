@@ -30,18 +30,14 @@ namespace Vypex.CodingChallenge.API.Controllers
                     double days = 0;
                     foreach (var employeeLeave in leaveService.GetEmployeeLeave(employee.Id))
                     {
-                        if (employeeLeave.LeaveTo.Day == employeeLeave.LeaveFrom.Day)
-                        {
-                            days += 1;
-                        }
-
+                        if (employeeLeave.LeaveTo.Day == employeeLeave.LeaveFrom.Day) days += 1;
                         days += (employeeLeave.LeaveTo - employeeLeave.LeaveFrom).TotalDays;
                     }
                     var employeeView = new EmployeeView
                     {
                         Id = employee.Id,
                         Name = employee.Name,
-                        TotalLeave = days,
+                        TotalLeave = Convert.ToInt16(days),
                     };
                     employeeViews.Add(employeeView);
                 }
@@ -92,11 +88,12 @@ namespace Vypex.CodingChallenge.API.Controllers
         public async Task<bool> DeleteLeaveRequests(string[] leaves)
         {
             List<Leave> leavesList = new();
-            Leave leave = new();
+            
             if (leaveService is not null)
             {
                 foreach (var item in leaves)
                 {
+                    Leave leave = new();
                     leave.LeaveId = Guid.Parse(item);
                     leavesList.Add(leave);
                 }

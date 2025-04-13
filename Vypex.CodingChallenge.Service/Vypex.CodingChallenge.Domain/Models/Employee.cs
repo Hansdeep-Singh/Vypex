@@ -7,6 +7,6 @@
     }
     public class EmployeeView : Employee
     {
-        public double TotalLeave { get; set; }
+        public int TotalLeave { get; set; }
     }
 }

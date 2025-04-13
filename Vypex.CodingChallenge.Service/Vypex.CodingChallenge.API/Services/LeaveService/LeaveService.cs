@@ -21,15 +21,11 @@ namespace Vypex.CodingChallenge.API.Services.LeaveService
         {
             return await GetAllAsync();
         }
-
-      
         public async Task<bool> Delete(List<Leave> leaves)
         {
             DeleteRange(leaves);
             await SaveAsync();
             return true;
-         
-
         }
         public async Task<bool> Add(Leave leave)
         {
