@@ -4,10 +4,10 @@
         <h2>Employee name = {{employee?.name}}</h2>
         <nz-range-picker [nzDisabledDate]="disabledDate" [(ngModel)]="date" (ngModelChange)="onChange($event)"></nz-range-picker>
         <button nz-button nzType="primary" (click)="saveLeave()">Save leave</button>
+        <button nz-button routerLink="/employees" nzType="primary">Employee leaves</button>
         <h3>Employee leave requests</h3>
         <nz-select nzMode="tags" nzPlaceHolder="Select leave requests" [(ngModel)]="selectedLeaves">
             @for (leave of employeeLeaves; track leave) {
-
             <nz-option [nzLabel]="'From '+(leave.leaveFrom | date) + ' to ' + (leave.leaveTo | date)" [nzValue]="leave.leaveId"></nz-option>
             }
         </nz-select>
